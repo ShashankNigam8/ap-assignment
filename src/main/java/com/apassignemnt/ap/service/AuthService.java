@@ -2,13 +2,16 @@ package com.apassignemnt.ap.service;
 
 import com.apassignemnt.ap.Constants;
 import com.apassignemnt.ap.entity.AuthRequest;
+import com.apassignemnt.ap.exception.NoAuthException;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.util.Date;
 
 @Service
+@Slf4j
 public class AuthService {
 
     public String generateToken(AuthRequest authRequest){
@@ -21,7 +24,8 @@ public class AuthService {
 
             return token;
         }else{
-            throw new IllegalArgumentException("Invalid Credentials");
+            log.error("Invalid credentials, please contact admin.");
+            throw new NoAuthException("Invalid Credentials");
         }
     }
 }
