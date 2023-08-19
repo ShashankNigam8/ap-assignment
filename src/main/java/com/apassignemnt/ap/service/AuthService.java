@@ -22,6 +22,7 @@ public class AuthService {
                     .signWith(SignatureAlgorithm.HS512, Constants.SECRET_KEY)
                     .compact();
 
+            log.info("Token generated Successfully!!!");
             return token;
         }else{
             log.error("Invalid credentials, please contact admin.");
