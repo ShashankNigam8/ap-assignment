@@ -2,10 +2,10 @@ package com.apassignemnt.ap.exception;
 
 import java.util.UUID;
 
-public class JwtValidationException extends RuntimeException {
+public class NoCountryFoundException extends RuntimeException {
     private String errorId;
 
-    public JwtValidationException(String message) {
+    public NoCountryFoundException(String message) {
         super(message);
         this.errorId = UUID.randomUUID().toString();
     }
