@@ -28,7 +28,8 @@ public class JwtValidationFilter extends OncePerRequestFilter {
         String token = extractToken(request);
 
         if(!StringUtils.hasText(token)){
-            throw new JwtValidationException("No Token present.");
+            response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+            return ;
         }
 
         try{
@@ -38,21 +39,24 @@ public class JwtValidationFilter extends OncePerRequestFilter {
                     .getBody();
 
             if(!Constants.USERNAME.equals(claims.getSubject())){
-                throw new JwtValidationException("You are not authorized.");
+                response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+                return ;
             }
 
             //token is expired or not
             long expirationTime = claims.getExpiration().getTime();
             long currentTime = System.currentTimeMillis();
 
+            log.info("Token issued at : " + claims.getIssuedAt() + " and expiry is : " + claims.getExpiration());
             if(expirationTime < currentTime){
-                throw new JwtValidationException("You are not authorized.");
+                response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+                return ;
             }
 
             filterChain.doFilter(request, response);
         }catch (Exception e){
             log.error("You are not authorized.");
-            throw new JwtValidationException("You are not authorized.");
+            response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
         }
     }
 
