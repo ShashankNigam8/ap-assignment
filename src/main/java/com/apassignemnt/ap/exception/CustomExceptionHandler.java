@@ -17,6 +17,12 @@ public class CustomExceptionHandler {
         return new ResponseEntity<>(errorResponse, HttpStatus.UNAUTHORIZED);
     }
 
+    @ExceptionHandler(NoCountryFoundException.class)
+    public ResponseEntity<ErrorResponse> handleCustomAuthenticationException(NoCountryFoundException ex){
+        ErrorResponse errorResponse = new ErrorResponse(ex.getErrorId(), ex.getMessage());
+        return new ResponseEntity<>(errorResponse, HttpStatus.NOT_FOUND);
+    }
+
     //Global exception handler to catch any unhandled exception
     @ExceptionHandler(Exception.class)
     public  ResponseEntity<ErrorResponse> handleGlobalException(Exception ex){
