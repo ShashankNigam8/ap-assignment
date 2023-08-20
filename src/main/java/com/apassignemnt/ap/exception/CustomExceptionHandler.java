@@ -23,6 +23,12 @@ public class CustomExceptionHandler {
         return new ResponseEntity<>(errorResponse, HttpStatus.NOT_FOUND);
     }
 
+    @ExceptionHandler(InCorrectResponseException.class)
+    public ResponseEntity<ErrorResponse> handleInCorrectResponseException(InCorrectResponseException ex){
+        ErrorResponse errorResponse = new ErrorResponse(ex.getErrorId(), ex.getMessage());
+        return new ResponseEntity<>(errorResponse, HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+
     //Global exception handler to catch any unhandled exception
     @ExceptionHandler(Exception.class)
     public  ResponseEntity<ErrorResponse> handleGlobalException(Exception ex){

@@ -2,12 +2,14 @@ package com.apassignemnt.ap.service;
 
 import com.apassignemnt.ap.entity.Country;
 import com.apassignemnt.ap.entity.CustomPageable;
+import com.apassignemnt.ap.exception.InCorrectResponseException;
 import com.apassignemnt.ap.exception.NoCountryFoundException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
+import org.springframework.web.client.RestClientResponseException;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponentsBuilder;
 
@@ -27,7 +29,11 @@ public class CountryServiceImpl implements CountryService{
         UriComponentsBuilder builder = UriComponentsBuilder.fromUriString(BASE_URL + "/name/")
                 .path(name);
         ResponseEntity<Country[]> responseEntity = restTemplate.getForEntity(builder.toUriString(), Country[].class);
-        return Arrays.asList(Objects.requireNonNull(responseEntity.getBody()));
+        if(responseEntity.getStatusCode().is2xxSuccessful()) {
+            return Arrays.asList(Objects.requireNonNull(responseEntity.getBody()));
+        }else{
+            throw new InCorrectResponseException("Client error!!!");
+        }
     }
 
     @Override
@@ -75,12 +81,6 @@ public class CountryServiceImpl implements CountryService{
        }
         return false;
     }
-//
-//    private List<String> sortList(List<String> countryNames, String sortOrder) {
-//        countryNames.sort((s1, s2) -> compareStrings(s1, s2, sortOrder));
-//        return countryNames;
-//
-//    }
 
     private int compareStrings(String s1, String s2, String sortOrder) {
         int result;
@@ -106,6 +106,11 @@ public class CountryServiceImpl implements CountryService{
     private List<Country> getAllCountries() {
         UriComponentsBuilder builder = UriComponentsBuilder.fromUriString(BASE_URL + "/all");
         ResponseEntity<Country[]> responseEntity = restTemplate.getForEntity(builder.toUriString(), Country[].class);
-        return Arrays.asList(Objects.requireNonNull(responseEntity.getBody()));
+
+        if(responseEntity.getStatusCode().is2xxSuccessful()) {
+            return Arrays.asList(Objects.requireNonNull(responseEntity.getBody()));
+        }else{
+            throw new InCorrectResponseException("Client error!!!");
+        }
     }
 }
